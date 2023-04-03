@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Icons</title>
+    <base href="/IconsAndStuff/" />
+    <link href="css/app.css" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': {
+                            DEFAULT: '#199F63',
+                            50: '#A7F1D0',
+                            100: '#96EEC7',
+                            200: '#72E9B4',
+                            300: '#4FE3A1',
+                            400: '#2CDE8E',
+                            500: '#1FC279',
+                            600: '#199F63',
+                            700: '#116F45',
+                            800: '#0A3E27',
+                            900: '#020E08'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer base {
+            *, ::before, ::after {
+                -webkit-tap-highlight-color: transparent;
+            }
+
+            .spinner {
+                border-radius: 50%;
+                width: 64px;
+                height: 64px;
+                border: 6px solid rgba(0, 0, 0, 0.1);
+                border-top: 6px solid #199F63;
+                animation: rotating 1.2s infinite cubic-bezier(0.785, 0.135, 0.15, 0.86);
+            }
+
+            header input::placeholder {
+                font-weight: 600;
+            }
+
+            header input:focus::placeholder {
+                font-weight: normal;
+            }
+
+            .dark .spinner {
+                border: 6px solid rgba(255, 255, 255, 0.1);
+                border-top: 6px solid #199F63;
+            }
+
+            .animate-from-right {
+                animation: 0.125s animate-from-right cubic-bezier(0.820, 0.085, 0.395, 0.895);
+                animation-iteration-count: 1;
+            }
+
+            .animate-to-right {
+                animation: 0.125s animate-to-right cubic-bezier(0.820, 0.085, 0.395, 0.895);
+                animation-iteration-count: 1;
+            }
+
+            .input-slider {
+                display: block;
+                position: relative;
+                height: 1.5rem;
+            }
+
+                .input-slider > input[type="range"] {
+                    appearance: none;
+                    position: absolute;
+                    z-index: 1;
+                    height: 1rem;
+                    margin-top: 0.25rem;
+                    margin-bottom: 0.25rem;
+                    width: 100%;
+                    background-color: transparent;
+                }
+
+                .input-slider > ::-webkit-slider-thumb {
+                    appearance: none;
+                    background-color: #199F63;
+                    width: 1rem;
+                    height: 1rem;
+                    background-color: #199F63;
+                    border-radius: 9999px;
+                    margin-top: 0.25rem;
+                    margin-bottom: 0.25rem;
+                    box-shadow: none;
+                    border: none;
+                    cursor: pointer;
+                }
+
+                .input-slider > ::-webkit-slider-thumb:hover {
+                    outline-width: 8px;
+                    outline-style: solid;
+                    outline-color: rgba(25, 159, 99, 0.25);
+                }
+
+                .input-slider > ::-moz-range-thumb {
+                    appearance: none;
+                    background-color: #199F63;
+                    width: 1rem;
+                    height: 1rem;
+                    background-color: #199F63;
+                    border-radius: 9999px;
+                    margin-top: 0.25rem;
+                    margin-bottom: 0.25rem;
+                    box-shadow: none;
+                    border: none;
+                    cursor: pointer;
+                }
+
+                .input-slider > ::-moz-range-thumb:hover {
+                    outline-width: 8px;
+                    outline-style: solid;
+                    outline-color: rgba(25, 159, 99, 0.25);
+                }
+
+            progress {
+                appearance: none;
+                position: absolute;
+                z-index: 0;
+                height: 4px;
+                margin-top: 0.625rem;
+                margin-bottom: 0.625rem;
+                width: 100%;
+                background-color: rgba(0,0,0,0.25);
+                overflow: hidden;
+                border-radius: 9999px;
+            }
+
+            .dark progress {
+                background: rgba(255,255,255,0.25);
+            }
+
+            ::-webkit-progress-bar {
+                appearance: none;
+                background: transparent;
+            }
+
+            ::-webkit-progress-value {
+                background: #199F63;
+            }
+
+            ::-moz-progress-bar {
+                background: #199F63;
+            }
+
+            @keyframes rotating {
+                100% {
+                    transform: rotate(360deg);
+                }
+            }
+
+            @keyframes animate-from-right {
+                0% {
+                    transform: translateX(110%);
+                }
+                100% {
+                    transform: translateX(0%);
+                }
+            }
+
+            @keyframes animate-to-right {
+                0% {
+                    transform: translateX(0%);
+                }
+                100% {
+                    transform: translateX(110%);
+                }
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="app" class="w-full min-h-screen bg-neutral-100 text-neutral-800 dark:bg-neutral-800 dark:text-neutral-400">
+        <div class="flex flex-col gap-4 -mt-8 items-center justify-center absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+            <i class="spinner"></i>
+            <small class="uppercase font-bold">Loading</small>
+        </div>
+    </div>
+
+    <div id="blazor-error-ui">
+        An unhandled error has occurred.
+        <a href="" class="reload">Reload</a>
+        <a class="dismiss">🗙</a>
+    </div>
+    <script defer>
+        window.darkMode = {
+            toggle: function () {
+                document.body.classList.toggle('dark');
+
+                if (document.body.classList.contains('dark')) {
+                    _darkMode = true;
+                }
+                else {
+                    _darkMode = false;
+                }
+            }
+        };
+        window.clipboardCopy = {
+            copyText: async function (text) {
+                await navigator.clipboard.writeText(text);
+            }
+        };
+        window.debounce = function (method, delay) {
+            clearTimeout(method._tId);
+            method._tId = setTimeout(function () {
+                method();
+            }, delay);
+        };
+        window.onscroll = function () {
+            debounce(window.scrollInfoOnScroll, 100);
+        };
+        window.scrollInfoOnScroll = () => {
+            if (window.scrollInfo != null) {
+                window.scrollInfo.invokeMethodAsync('OnScroll', parseInt(window.pageXOffset), parseInt(window.pageYOffset));
+            }
+        };
+        window.registerScrollInfo = (scrollInfo) => {
+            window.scrollInfo = scrollInfo;
+        };
+        window.file = {
+            download: async (filename, streamRef) => {
+                const arrayBuffer = await streamRef.arrayBuffer();
+                const blob = new Blob([arrayBuffer]);
+                const url = URL.createObjectURL(blob);
+
+                file.trigger(filename, url);
+                URL.revokeObjectURL(url);
+            },
+            trigger: (filename, href) => {
+                const a = document.createElement("a");
+                a.href = href;
+
+                if (filename) {
+                    a.download = filename;
+                }
+
+                a.click();
+                a.remove();
+            }
+        }
+
+        var _filters = JSON.parse(localStorage.getItem('_filters'));
+
+        if (_filters != null && _filters != undefined && _filters.DarkMode) {
+            darkMode.toggle();
+        }
+
+    </script>
+    <script src="_framework/blazor.webassembly.js"></script>
+</body>
+</html>
