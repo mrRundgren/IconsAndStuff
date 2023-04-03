@@ -1,0 +1,49 @@
+is_global = true
+build_property.TargetFramework = net6.0
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = 
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = false
+build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property._SupportedPlatformList = browser
+build_property.RootNamespace = IconsAndStuff
+build_property.RootNamespace = IconsAndStuff
+build_property.ProjectDir = C:\Users\AndersRundgren\Source\Repos\IconsAndStuff\
+build_property.RazorLangVersion = 6.0
+build_property.SupportLocalizedComponentNames = 
+build_property.GenerateRazorMetadataSourceChecksumAttributes = 
+build_property.MSBuildProjectDirectory = C:\Users\AndersRundgren\Source\Repos\IconsAndStuff
+build_property._RazorSourceGeneratorDebug = 
+
+[C:/Users/AndersRundgren/Source/Repos/IconsAndStuff/App.razor]
+build_metadata.AdditionalFiles.TargetPath = QXBwLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/AndersRundgren/Source/Repos/IconsAndStuff/Components/Drawer.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xEcmF3ZXIucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/AndersRundgren/Source/Repos/IconsAndStuff/Components/RadioChip.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xSYWRpb0NoaXAucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/AndersRundgren/Source/Repos/IconsAndStuff/Components/ScrollInfo.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xTY3JvbGxJbmZvLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/AndersRundgren/Source/Repos/IconsAndStuff/Components/Settings.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xTZXR0aW5ncy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/AndersRundgren/Source/Repos/IconsAndStuff/Pages/Index.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSW5kZXgucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/AndersRundgren/Source/Repos/IconsAndStuff/Shared/MainLayout.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXE1haW5MYXlvdXQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/AndersRundgren/Source/Repos/IconsAndStuff/_Imports.razor]
+build_metadata.AdditionalFiles.TargetPath = X0ltcG9ydHMucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
