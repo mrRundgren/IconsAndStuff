@@ -101,7 +101,7 @@
     int _gradeInt { get => (int)Filters.Grade; set => Filters.Grade = (IconGrade)value; }
     int _sizeInt { get => (int)Filters.Size; set => Filters.Size = (IconSize)value; }
 
-    bool _showMessage;
+    //bool _showMessage;
     string _googleLink { get => $"https://fonts.google.com/icons?selected=Material+Symbols+Outlined:search:FILL@{Filters.Fill.Value()};wght@{Filters.Weight.Value()};GRAD@{Filters.Grade.Value()};opsz@{Filters.Size.Value()}&icon.style={Enum.GetName(typeof(IconType), Filters.Type)}"; }
 
     protected override async Task OnInitializedAsync()
@@ -124,7 +124,7 @@
 
     private Task CopyToClipboard()
     {
-        _showMessage = true;
+        //_showMessage = true;
         Filters.OnCopyDefaultsToClipboard += ShowCopiedMessage;
         return Filters.CopyDefaultsToClipboard();
     }
@@ -148,7 +148,7 @@
 
     void ResetMessage(object? source, ElapsedEventArgs e)
     {
-        _showMessage = false;
+        //_showMessage = false;
         StateHasChanged();
     }
 }
