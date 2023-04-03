@@ -1,0 +1,142 @@
+﻿@using System.Text.RegularExpressions;
+@using System.Timers;
+@page "/"
+@inject HttpClient HttpClient
+@inject IJSRuntime JSRuntime
+
+<PageTitle>Material Symbols for Blazor</PageTitle>
+
+@if (_showMessage && !string.IsNullOrWhiteSpace(Filters.SelectedIcon))
+{
+    <div class="flex max-w-sm p-2 fixed top-0 left-1/2 -translate-x-1/2 xl:top-auto xl:left-0 xl:bottom-0 xl:-translate-x-0 z-50 opacity-95">
+        <article class="flex-1 flex items-center justify-center gap-4 p-2 pr-4 bg-primary text-white/75 text-center rounded-lg drop-shadow-lg overflow-hidden">
+            <Icon Name="@Filters.SelectedIcon" class="p-3 bg-white/25 rounded-full" />
+            <small class="font-bold block truncate">Copied to clipboard</small>
+        </article>
+    </div>
+}
+
+<div class="p-2 xl:px-4 mx-auto max-w-7xl">
+    <h1 class="mt-4 mb-4 text-2xl select-none text-center xl:text-left">@Filters.Title</h1>
+
+    @if(!string.IsNullOrWhiteSpace(Filters.SubTitle))
+    {
+        <small class="block mb-8 text-center xl:text-left">@Filters.SubTitle</small>
+    }
+
+    <ul class="grid gap-2 grid-cols-[repeat(auto-fill,_minmax(150px,_1fr))]">
+        <Virtualize Context="icon" Items="Filters.Data" OverscanCount="150">
+            <li @onclick="@(() => ClickAction(icon))" class="flex flex-col select-none items-center@(icon.Value == Filters.SelectedIcon ? " outline " : " ")rounded bg-white dark:bg-neutral-900/90 dark:text-neutral-500 aspect-square p-3 truncate cursor-pointer hover:text-primary hover:bg-primary/10 dark:hover:bg-primary/10 dark:hover:text-primary hover:outline hover:outline-primary active:text-white/75 dark:active:text-white/75 active:bg-primary dark:active:bg-primary">
+                <div class="flex items-center justify-center flex-1">
+                    <Icon Name="@icon.Value"
+                        @bind-Type="Filters.Type"
+                        @bind-Fill="Filters.Fill"
+                        @bind-Weight="Filters.Weight"
+                        @bind-Grade="Filters.Grade"
+                        @bind-Size="Filters.Size" />
+                </div>
+                <small class="block text-center truncate w-full py-3">@String.Join(" ", Regex.Split(icon.Key, @"(?<!^)(?=[A-Z])"))</small>
+            </li>
+        </Virtualize>
+    </ul>
+</div>
+
+@code {
+    [CascadingParameter(Name="Filters")]
+    FilterParams Filters { get; set; } = null!;
+    Timer? _timer;
+    bool _showMessage;
+
+    Task ClickAction(KeyValuePair<string, string> icon)
+    {
+        if(Filters.FontDownload)
+        {
+            return DownloadSvg(icon);
+        }
+        else
+        {
+            return CopyIconToClipboard(icon);
+        }
+    }
+
+    async Task DownloadSvg(KeyValuePair<string, string> icon)
+    {
+        var settings = "";
+
+        if (Filters.Weight.Value() == Filters.DefaultWeight.Value() && Filters.Grade.Value() == Filters.DefaultGrade.Value() && Filters.Fill.Value() == Filters.DefaultGrade.Value())
+        {
+            settings = "default";
+        }
+        else
+        {
+            if (Filters.Weight.Value() != Filters.DefaultWeight.Value())
+            {
+                settings = String.Concat(settings, $"wght{Filters.Weight.Value()}");
+            }
+
+            if (Filters.Grade.Value() !=  Filters.DefaultGrade.Value())
+            {
+                var grade = "";
+
+                if (Filters.Grade == IconGrade.Low)
+                {
+                    grade = "N25";
+                }
+                else
+                {
+                    grade = Filters.Grade.Value().ToString();
+                }
+
+                settings = String.Concat(settings, $"grad{grade}");
+            }
+
+            if (Filters.Fill.Value() != Filters.DefaultFill.Value())
+            {
+                settings = String.Concat(settings, $"fill{Filters.Fill.Value()}");
+            }
+        }
+
+        var filename = $"{icon.Value}/{settings}/{Filters.Size.Value()}px.svg";
+        var href = $"{Constants.GoogleSvgUrl}{Filters.Type.Value().Replace(" ", "").ToLower()}/{filename}";
+
+        filename = $"{filename.Replace("/", "_")}";
+
+        var request = new HttpRequestMessage(HttpMethod.Get, href);
+        var response = await HttpClient.SendAsync(request);
+        var stream = await response.Content.ReadAsStreamAsync();
+
+        using var streamRef = new DotNetStreamReference(stream: stream);
+        await JSRuntime.InvokeVoidAsync(Interops.File_Download, filename, streamRef);
+    }
+
+    async Task CopyIconToClipboard(KeyValuePair<string, string> icon)
+    {
+        _showMessage = true;
+        Filters.SelectedIcon = icon.Value;
+        Filters.OnCopyIconToClipboard = new EventHandler<KeyValuePair<string, string>>(ShowIconCopiedMessage);
+        await Filters.CopyIconToClipboard(icon);
+    }
+
+    void ShowIconCopiedMessage(object? sender, KeyValuePair<string, string> icon)
+    {
+        SetMessageTimer(2000);
+    }
+
+    void SetMessageTimer(int timeout)
+    {
+        if (_timer != null)
+        {
+            _timer.Stop();
+        }
+
+        _timer = new(2000);
+        _timer.Elapsed += ResetMessage;
+        _timer.Start();
+    }
+
+    void ResetMessage(object? source, ElapsedEventArgs e)
+    {
+        _showMessage = false;
+        StateHasChanged();
+    }
+}

@@ -1,0 +1,79 @@
+﻿@implements IDisposable
+@using System.Timers
+
+@if(Open)
+{
+    <aside class="@_animation w-full flex flex-col max-w-md bg-white pt-16 drop-shadow-lg z-40 dark:bg-neutral-900 h-screen overflow-y-auto fixed right-0 top-0 @(string.IsNullOrWhiteSpace(Class) ? "" : $" {Class}")" @attributes="@GetAttributes()">
+        @ChildContent
+    </aside>
+}
+
+@code {
+    [Parameter]
+    public bool Open { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> OpenChanged { get; set; }
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; } = null!;
+
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object>? Attributes { get; set; }
+
+    Timer? _animationTimer = null!;
+    string _animation = String.Empty;
+
+    private string? Class { get => Attributes?.SingleOrDefault(_ => _.Key == "class").Value?.ToString(); }
+    private Dictionary<string, object>? GetAttributes() => Attributes?.Where(_ => _.Key != "class").ToDictionary(_ => _.Key, _ => _.Value);
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        _animationTimer = new Timer(125);
+        _animationTimer.Elapsed += OnCloseDrawer;
+        _animationTimer.AutoReset = false;
+    }
+
+    public void Toggle()
+    {
+        if (Open)
+        {
+            CloseDrawer();
+        }
+        else
+        {
+            OpenDrawer();
+        }
+    }
+
+    private void OpenDrawer()
+    {
+        _animation = "animate-from-right";
+        Open = true;
+        OpenChanged.InvokeAsync();
+    }
+
+    private void CloseDrawer()
+    {
+        _animation = "animate-to-right";
+        StateHasChanged();
+
+        if (_animationTimer!.Enabled)
+        {
+            _animationTimer.Stop();
+        }
+
+        _animationTimer.Start();
+    }
+
+    private void OnCloseDrawer(object? sender, ElapsedEventArgs e)
+    {
+        Open = false;
+        OpenChanged.InvokeAsync();
+        StateHasChanged();
+    }
+
+    public void Dispose() => _animationTimer?.Dispose();
+}

@@ -1,0 +1,17 @@
+﻿@typeparam T
+<label class="flex align-items-center justify-center uppercase cursor-pointer @(string.IsNullOrWhiteSpace(Class) ? "" : $" {Class}")" @attributes="@GetAttributes()">
+    <InputRadio Value="@Value" class="peer hidden" />
+    <small class="flex-1 px-3 py-1 rounded-full overflow-hidden border-2 border-primary text-center dark:text-neutral-400 hover:bg-primary/25 hover:text-primary dark:hover:text-white peer-checked:bg-primary peer-checked:text-white peer-checked:hover:bg-primary peer-checked:hover:text-white">@Text</small>
+</label>
+
+@code {
+    [Parameter]
+    public string Text { get; set; } = default!;
+    [Parameter]
+    public T Value { get; set; } = default!;
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object>? Attributes { get; set; }
+
+    private string? Class { get => Attributes?.SingleOrDefault(_ => _.Key == "class").Value?.ToString(); }
+    private Dictionary<string, object>? GetAttributes() => Attributes?.Where(_ => _.Key != "class").ToDictionary(_ => _.Key, _ => _.Value);
+}

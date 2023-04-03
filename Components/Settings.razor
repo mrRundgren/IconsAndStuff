@@ -1,0 +1,154 @@
+﻿@using System.Timers;
+@inject IJSRuntime JSRuntime
+<p class="p-2 mb-4">
+    Symbols are available in three styles and four adjustable variable font styles (fill, weight, grade, and size).
+</p>
+<EditForm EditContext="_context" class="grid gap-4 p-2">
+    <hr class="-mx-4 border-black/10 dark:border-white/20" />
+    <div class="flex flex-row items-center gap-2 justify-center">
+        <strong class="block mb-2 flex-1">Type</strong>
+        <InputRadioGroup @bind-Value="Filters.Type">
+            <RadioChip Text="Outlined" Value="@IconType.Outlined" />
+            <RadioChip Text="Rounded" Value="@IconType.Rounded" />
+            <RadioChip Text="Sharp" Value="@IconType.Sharp" />
+        </InputRadioGroup>
+    </div>
+    <div class="flex flex-row items-center gap-2 justify-center">
+        <strong class="block mb-2 flex-1">Fill</strong>
+        <InputRadioGroup @bind-Value="Filters.Fill">
+            <RadioChip Text="None" Value="@IconFill.None" />
+            <RadioChip Text="Solid" Value="@IconFill.Solid" />
+        </InputRadioGroup>
+    </div>
+    <hr class="-mx-4 border-black/10 dark:border-white/20" />
+    <div>
+        <strong class="block mb-2">Weight</strong>
+        <label class="input-slider">
+            <input type="range" @bind-value="@_weightInt" @bind-value:event="oninput" @onchange="ValueChanged" min="@((int)IconWeight.Weight100)" max="@((int)IconWeight.Weight700)" step="1" />
+            <progress @bind-value="@_weightInt" @bind-value:event="onchange" max="@((int)IconWeight.Weight700)" />
+        </label>
+    </div>
+    <div>
+        <strong>Grade</strong>
+        <label class="input-slider">
+            <input type="range" @bind-value="@_gradeInt" @bind-value:event="oninput" @onchange="ValueChanged" min="@((int)IconGrade.Low)" max="@((int)IconGrade.High)" step="1" />
+            <progress @bind-value="@_gradeInt" @bind-value:event="onchange" max="@((int)IconGrade.High)" />
+        </label>
+    </div>
+    <div>
+        <strong>Size</strong>
+        <label class="input-slider">
+            <input type="range" @bind-value="@_sizeInt" @bind-value:event="oninput" @onchange="ValueChanged" min="@((int)IconSize.Small)" max="@((int)IconSize.ExtraLarge)" step="1" />
+            <progress @bind-value="@_sizeInt" @bind-value:event="onchange" max="@((int)IconSize.ExtraLarge)" />
+        </label>
+    </div>
+    <hr class="-mx-4 border-black/10 dark:border-white/10" />
+    <div class="text-center">
+        <small>@Filters.Type, Fill: @Filters.Fill.Value(), Weight: @Filters.Weight.Value(), Grade: @Filters.Grade.Value(), Optical Size: @Filters.Size.Value()</small>
+    </div>
+    <hr class="-mx-4 border-black/10 dark:border-white/20" />
+    <div class="flex items-center">
+        <div class="flex-1">
+            <label class="inline-flex items-center gap-2 cursor-pointer group select-none">
+                <InputCheckbox @bind-Value="Filters.UseAsStandard" class="hidden" />
+                @if(Filters.UseAsStandard)
+                {
+                    <Icon Name="@Icons.SelectCheckBox" class="text-primary py-3" />
+                }
+                else
+                {
+                    <Icon Name="@Icons.CheckBoxOutlineBlank" class="py-3 text-neutral-500" />
+                }
+                <span class="block truncate">IconManager defaults</span>
+            </label>
+        </div>
+        @if(Filters.UseAsStandard)
+        {
+        <button @onclick="CopyToClipboard" tabindex="-1" class="-mr-3 xl:ml-0 rounded-full select-none active:bg-black/10 dark:active:bg-white/10">
+            <Icon Name="@Icons.ContentCopy" class="p-3" />
+        </button>
+        }
+    </div>
+    <hr class="-mx-4 border-black/10 dark:border-white/20" />
+    <div class="mt-16 mb-2">
+        <a href="@_googleLink" target="google_fonts" class="flex flex-row items-center gap-2 justify-center w-full cursor-pointer select-none rounded-full bg-transparent outline outline-primary text-primary hover:text-white hover:bg-primary active:bg-primary-700 active:outline-primary-700">
+            <span class="block truncate py-3">View in Google Fonts</span>
+        </a>
+    </div>
+</EditForm>
+
+@*@if (_showMessage)
+{
+    <div class="flex max-w-sm p-2 fixed top-0 left-1/2 -translate-x-1/2 xl:top-auto xl:left-0 xl:bottom-0 xl:-translate-x-0 z-50 opacity-95">
+        <article class="flex-1 flex items-center justify-center gap-4 p-2 pr-4 bg-primary text-white/75 text-center rounded-lg drop-shadow-lg overflow-hidden">
+            <Icon Name="@Icons.ContentCopy" class="p-3 bg-white/25 rounded-full" />
+            <small class="font-bold block truncate">IconManager defaults copied to clipboard</small>
+        </article>
+    </div>
+}*@
+
+@code {
+    [Parameter]
+    public FilterParams Filters { get; set; } = null!;
+
+    [Parameter]
+    public EventCallback<FilterParams> FiltersChanged { get; set; }
+
+    EditContext _context = null!;
+    Timer? _timer;
+
+    int _weightInt { get => (int)Filters.Weight; set => Filters.Weight = (IconWeight)value; }
+    int _gradeInt { get => (int)Filters.Grade; set => Filters.Grade = (IconGrade)value; }
+    int _sizeInt { get => (int)Filters.Size; set => Filters.Size = (IconSize)value; }
+
+    bool _showMessage;
+    string _googleLink { get => $"https://fonts.google.com/icons?selected=Material+Symbols+Outlined:search:FILL@{Filters.Fill.Value()};wght@{Filters.Weight.Value()};GRAD@{Filters.Grade.Value()};opsz@{Filters.Size.Value()}&icon.style={Enum.GetName(typeof(IconType), Filters.Type)}"; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        _context = new EditContext(Filters);
+        _context.OnFieldChanged += OnFieldChanged;
+        await base.OnInitializedAsync();
+    }
+
+    private void OnFieldChanged(object? sender = null, FieldChangedEventArgs? e = null)
+    {
+        FiltersChanged.InvokeAsync(Filters);
+        JSRuntime.InvokeVoidAsync("localStorage.setItem", new object[] { "_filters", JsonSerializer.Serialize(Filters) });
+    }
+
+    private void ValueChanged()
+    {
+        OnFieldChanged();
+    }
+
+    private Task CopyToClipboard()
+    {
+        _showMessage = true;
+        Filters.OnCopyDefaultsToClipboard += ShowCopiedMessage;
+        return Filters.CopyDefaultsToClipboard();
+    }
+
+    void ShowCopiedMessage(object? sender, EventArgs e)
+    {
+        SetMessageTimer(2000);
+    }
+
+    void SetMessageTimer(int timeout)
+    {
+        if (_timer != null)
+        {
+            _timer.Stop();
+        }
+
+        _timer = new(2000);
+        _timer.Elapsed += ResetMessage;
+        _timer.Start();
+    }
+
+    void ResetMessage(object? source, ElapsedEventArgs e)
+    {
+        _showMessage = false;
+        StateHasChanged();
+    }
+}

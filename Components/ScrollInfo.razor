@@ -1,0 +1,20 @@
+﻿@inject IJSRuntime JSRuntime
+@code {
+    [Parameter]
+    public EventCallback<(int x, int y)> OnScroll { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await JSRuntime.InvokeVoidAsync("registerScrollInfo", DotNetObjectReference.Create(this));
+        await base.OnInitializedAsync();
+    }
+
+    [JSInvokable("OnScroll")]
+    public void JsOnScroll(int x, int y)
+    {
+        if(OnScroll.HasDelegate)
+        {
+            OnScroll.InvokeAsync((x, y));
+        }
+    }
+}
