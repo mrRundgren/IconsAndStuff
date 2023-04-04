@@ -1,6 +1,7 @@
 ﻿using Microsoft.JSInterop;
 using BlazorMaterialSymbols;
 using System.Text.Json.Serialization;
+using System.Xml.Linq;
 
 namespace IconsAndStuff.Models;
 
@@ -15,7 +16,7 @@ public sealed class FilterParams : FilterParamsData
     [JsonIgnore]
     public string Name { get; set; } = "";
     [JsonIgnore]
-    public string SelectedIcon { get; set; } = "";
+    public string? SelectedIcon { get; set; }
     [JsonIgnore]
     public Dictionary<string, string> Data { get => _all.Where(_ => _.Key.ToLower().Contains(Name.Replace(" ", "").ToLower())).ToDictionary(_ => _.Key, _ => _.Value); }
     [JsonIgnore]
@@ -83,7 +84,7 @@ public sealed class FilterParams : FilterParamsData
         UseAsStandard = data.UseAsStandard;
     }
 
-    private string IconClipboardText(KeyValuePair<string, string> item) {
+    public string IconClipboardText(KeyValuePair<string, string> item) {
         var name = $"Name=\"@Icons.{item.Key}\"";
 
         if (UseAsStandard)
@@ -100,10 +101,19 @@ public sealed class FilterParams : FilterParamsData
             return $"<Icon {name}{type}{fill}{weight}{grade}{size} />";
         }
     }
+    public string DefaultsClipboardText()
+    {
+        var type = Type != DefaultType ? $" Type=\"@IconType.{Type}\"" : "";
+        var fill = Fill != DefaultFill ? $" Fill=\"@IconFill.{Fill}\"" : "";
+        var weight = Weight != DefaultWeight ? $" Weight=\"@IconWeight.{Weight}\"" : "";
+        var grade = Grade != DefaultGrade ? $" Grade=\"@IconGrade.{Grade}\"" : "";
+        var size = Size != DefaultSize ? $" Size=\"@IconSize.{Size}\"" : "";
+        return $"<IconManager {type}{fill}{weight}{grade}{size} />";
+    }
 
     public async Task CopyDefaultsToClipboard()
     {
-        var clipboardText = $"<IconManager Type=\"@IconType.{Type}\" Fill=\"@IconFill.{Fill}\" Weight=\"@IconWeight.{Weight}\" Grade=\"@IconGrade.{Grade}\" Size=\"@IconSize.{Size}\" />";
+        var clipboardText = DefaultsClipboardText();
         OnCopyDefaultsToClipboard?.Invoke(this, EventArgs.Empty);
         await JSRuntime.InvokeVoidAsync("clipboardCopy.copyText", clipboardText);
     }

@@ -8,7 +8,7 @@
 
 @if (_showMessage && !string.IsNullOrWhiteSpace(Filters.SelectedIcon))
 {
-    <div class="flex max-w-sm p-2 fixed top-0 left-1/2 -translate-x-1/2 xl:top-auto xl:left-0 xl:bottom-0 xl:-translate-x-0 z-50 opacity-95">
+    <div class="hidden sm:flex max-w-sm p-2 fixed top-0 left-1/2 -translate-x-1/2 xl:top-auto xl:left-0 xl:bottom-0 xl:-translate-x-0 z-50 opacity-95">
         <article class="flex-1 flex items-center justify-center gap-4 p-2 pr-4 bg-primary text-white/75 text-center rounded-lg drop-shadow-lg overflow-hidden">
             <Icon Name="@Filters.SelectedIcon" class="p-3 bg-white/25 rounded-full" />
             <small class="font-bold block truncate">Copied to clipboard</small>

@@ -5,6 +5,23 @@
 </p>
 <EditForm EditContext="_context" class="grid gap-4 p-2">
     <hr class="-mx-4 border-black/10 dark:border-white/20" />
+    <div class="flex items-center">
+        <div class="flex-1">
+            <label class="inline-flex items-center gap-2 cursor-pointer group select-none">
+                <InputCheckbox @bind-Value="Filters.UseAsStandard" class="hidden" />
+                @if (Filters.UseAsStandard)
+                {
+                    <Icon Name="@Icons.SelectCheckBox" class="text-primary py-3" />
+                }
+                else
+                {
+                    <Icon Name="@Icons.CheckBoxOutlineBlank" class="py-3 text-neutral-500" />
+                }
+                <span class="block truncate">Copy/Paste icons without settings</span>
+            </label>
+        </div>
+    </div>
+    <hr class="-mx-4 border-black/10 dark:border-white/20" />
     <div class="flex flex-row items-center gap-2 justify-center">
         <strong class="block mb-2 flex-1">Type</strong>
         <InputRadioGroup @bind-Value="Filters.Type">
@@ -22,21 +39,21 @@
     </div>
     <hr class="-mx-4 border-black/10 dark:border-white/20" />
     <div>
-        <strong class="block mb-2">Weight</strong>
+        <strong class="block mb-2">Weight: @Filters.Weight.Value()</strong>
         <label class="input-slider">
             <input type="range" @bind-value="@_weightInt" @bind-value:event="oninput" @onchange="ValueChanged" min="@((int)IconWeight.Weight100)" max="@((int)IconWeight.Weight700)" step="1" />
             <progress @bind-value="@_weightInt" @bind-value:event="onchange" max="@((int)IconWeight.Weight700)" />
         </label>
     </div>
     <div>
-        <strong>Grade</strong>
+        <strong>Grade: @Filters.Grade.Value()</strong>
         <label class="input-slider">
             <input type="range" @bind-value="@_gradeInt" @bind-value:event="oninput" @onchange="ValueChanged" min="@((int)IconGrade.Low)" max="@((int)IconGrade.High)" step="1" />
             <progress @bind-value="@_gradeInt" @bind-value:event="onchange" max="@((int)IconGrade.High)" />
         </label>
     </div>
     <div>
-        <strong>Size</strong>
+        <strong>Size: @(Filters.Size.Value())px</strong>
         <label class="input-slider">
             <input type="range" @bind-value="@_sizeInt" @bind-value:event="oninput" @onchange="ValueChanged" min="@((int)IconSize.Small)" max="@((int)IconSize.ExtraLarge)" step="1" />
             <progress @bind-value="@_sizeInt" @bind-value:event="onchange" max="@((int)IconSize.ExtraLarge)" />
@@ -47,28 +64,25 @@
         <small>@Filters.Type, Fill: @Filters.Fill.Value(), Weight: @Filters.Weight.Value(), Grade: @Filters.Grade.Value(), Optical Size: @Filters.Size.Value()</small>
     </div>
     <hr class="-mx-4 border-black/10 dark:border-white/20" />
-    <div class="flex items-center">
-        <div class="flex-1">
-            <label class="inline-flex items-center gap-2 cursor-pointer group select-none">
-                <InputCheckbox @bind-Value="Filters.UseAsStandard" class="hidden" />
-                @if(Filters.UseAsStandard)
-                {
-                    <Icon Name="@Icons.SelectCheckBox" class="text-primary py-3" />
-                }
-                else
-                {
-                    <Icon Name="@Icons.CheckBoxOutlineBlank" class="py-3 text-neutral-500" />
-                }
-                <span class="block truncate">IconManager defaults</span>
-            </label>
-        </div>
-        @if(Filters.UseAsStandard)
-        {
-        <button @onclick="CopyToClipboard" tabindex="-1" class="-mr-3 xl:ml-0 rounded-full select-none active:bg-black/10 dark:active:bg-white/10">
+    <h3 class="font-bold">Instructions</h3>
+    <p>
+        Install the <a href="https://www.nuget.org/packages/BlazorMaterialSymbols" class="text-primary underline" target="_blank">Blazor Material Symbols</a> nuget package.
+    </p>
+    <p>
+
+    </p>
+    <code class="px-4 py-10 block text-center rounded relative bg-neutral-200 dark:bg-neutral-800">
+        <button @onclick="CopyToClipboard" tabindex="-1" class="absolute top-1 right-1 rounded-full select-none active:bg-black/10 dark:active:bg-white/10">
             <Icon Name="@Icons.ContentCopy" class="p-3" />
         </button>
-        }
-    </div>
+        <small class="block">@Filters.DefaultsClipboardText()</small>
+    </code>
+    <small class="block">
+        Use current settings as defaults for the IconManager component, by copy/pasting the above code into your MainLayout.razor file.
+    </small>
+    <small class="block">
+        That's it, you can now copy/paste (or download svg) icons.
+    </small>
     <hr class="-mx-4 border-black/10 dark:border-white/20" />
     <div class="mt-16 mb-2">
         <a href="@_googleLink" target="google_fonts" class="flex flex-row items-center gap-2 justify-center w-full cursor-pointer select-none rounded-full bg-transparent outline outline-primary text-primary hover:text-white hover:bg-primary active:bg-primary-700 active:outline-primary-700">
