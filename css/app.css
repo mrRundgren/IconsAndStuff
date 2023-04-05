@@ -1,6 +1,7 @@
 ﻿*, *::before, *::after {
-    -webkit-tap-highlight-color:transparent;
+    -webkit-tap-highlight-color: transparent;
 }
+
 #blazor-error-ui {
     background: lightyellow;
     bottom: 0;
@@ -30,6 +31,196 @@
         content: "An error has occurred."
     }
 
-.grid > div[style="height: 0px;"]:first-of-type {
+.grid > div[style="height: 0px; flex-shrink: 0;"]:first-of-type {
     display: none;
+}
+
+*, ::before, ::after {
+    -webkit-tap-highlight-color: transparent;
+}
+
+.spinner {
+    border-radius: 50%;
+    width: 64px;
+    height: 64px;
+    border: 6px solid rgba(0, 0, 0, 0.1);
+    border-top: 6px solid #199F63;
+    animation: rotating 1.2s infinite cubic-bezier(0.785, 0.135, 0.15, 0.86);
+}
+
+header input::placeholder {
+    font-weight: 600;
+}
+
+header input:focus::placeholder {
+    font-weight: normal;
+}
+
+.dark .spinner {
+    border: 6px solid rgba(255, 255, 255, 0.1);
+    border-top: 6px solid #199F63;
+}
+
+.animate-from-right {
+    animation: 0.125s animate-from-right cubic-bezier(0.820, 0.085, 0.395, 0.895);
+    animation-iteration-count: 1;
+}
+
+.animate-to-right {
+    animation: 0.125s animate-to-right cubic-bezier(0.820, 0.085, 0.395, 0.895);
+    animation-iteration-count: 1;
+}
+
+.animate-fade-in {
+    animation: 0.125s animate-fade-in cubic-bezier(0.820, 0.085, 0.395, 0.895);
+    animation-iteration-count: 1;
+}
+
+.animate-fade-out {
+    animation: 0.125s animate-fade-out cubic-bezier(0.820, 0.085, 0.395, 0.895);
+    animation-iteration-count: 1;
+}
+
+
+.input-slider {
+    display: block;
+    position: relative;
+    height: 1.5rem;
+}
+
+    .input-slider > input[type="range"] {
+        appearance: none;
+        position: absolute;
+        z-index: 1;
+        height: 1rem;
+        margin-top: 0.25rem;
+        margin-bottom: 0.25rem;
+        width: 100%;
+        background-color: transparent;
+    }
+
+:focus {
+    outline: none;
+}
+
+.input-slider > ::-webkit-slider-thumb {
+    appearance: none;
+    background-color: #199F63;
+    width: 1rem;
+    height: 1rem;
+    background-color: #199F63;
+    border-radius: 9999px;
+    margin-top: 0.25rem;
+    margin-bottom: 0.25rem;
+    box-shadow: none;
+    border: none;
+    cursor: pointer;
+}
+
+    .input-slider > ::-webkit-slider-thumb:hover {
+        outline-width: 8px;
+        outline-style: solid;
+        outline-color: rgba(25, 159, 99, 0.25);
+    }
+
+.input-slider > :focus::-webkit-slider-thumb {
+    outline-width: 16px;
+    outline-style: solid;
+    outline-color: rgba(25, 159, 99, 0.25);
+}
+
+.input-slider > ::-moz-range-thumb {
+    appearance: none;
+    background-color: #199F63;
+    width: 1rem;
+    height: 1rem;
+    background-color: #199F63;
+    border-radius: 9999px;
+    margin-top: 0.25rem;
+    margin-bottom: 0.25rem;
+    box-shadow: none;
+    border: none;
+    cursor: pointer;
+}
+
+    .input-slider > ::-moz-range-thumb:hover {
+        outline-width: 8px;
+        outline-style: solid;
+        outline-color: rgba(25, 159, 99, 0.25);
+    }
+
+progress {
+    appearance: none;
+    position: absolute;
+    z-index: 0;
+    height: 4px;
+    margin-top: 0.625rem;
+    margin-bottom: 0.625rem;
+    width: 100%;
+    background-color: rgba(0,0,0,0.25);
+    overflow: hidden;
+    border-radius: 9999px;
+}
+
+.dark progress {
+    background: rgba(255,255,255,0.25);
+}
+
+::-webkit-progress-bar {
+    appearance: none;
+    background: transparent;
+}
+
+::-webkit-progress-value {
+    background: #199F63;
+}
+
+::-moz-progress-bar {
+    background: #199F63;
+}
+
+@keyframes rotating {
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes animate-from-right {
+    0% {
+        transform: translateX(110%);
+    }
+
+    100% {
+        transform: translateX(0%);
+    }
+}
+
+@keyframes animate-to-right {
+    0% {
+        transform: translateX(0%);
+    }
+
+    100% {
+        transform: translateX(110%);
+    }
+}
+
+@keyframes animate-fade-in {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes animate-fade-out {
+    0% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
 }
