@@ -165,6 +165,7 @@
             DarkMode = darkMode,
             DownloadSvg = fontDownload
         };
+        FiltersChanged.InvokeAsync(Filters);
         JSRuntime.InvokeVoidAsync(Interops.LocalStorage_SetItem, new object[] { "_filters", JsonSerializer.Serialize(Filters) });
     }
 }
