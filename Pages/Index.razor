@@ -57,7 +57,7 @@
     Timer? _timer;
     bool _showMessage;
     bool _downloadError;
-    bool IsValidDownload { get => Filters.DownloadSvg && (Filters.Size != IconSize.MD && Filters.Size != IconSize.XXL && Filters.Size != IconSize.XXXL); }
+    bool IsValidDownload { get => Filters.DownloadSvg && (Filters.Size != IconSize.MD && Filters.Size != IconSize.XXL && Filters.Size != IconSize.XXXL && Filters.Grade != IconGrade.Min); }
 
     Task ClickAction(KeyValuePair<string, string> icon)
     {

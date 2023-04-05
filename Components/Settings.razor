@@ -46,7 +46,7 @@
         </label>
     </div>
     <div>
-        <strong>Grade: @Filters.Grade.Value()</strong>
+        <strong class="@(Filters.DownloadSvg && (Filters.Grade == IconGrade.Min) ? "text-red-700" : "")">Grade: @Filters.Grade.Value()</strong>
         <label class="input-slider">
             <input type="range" @bind-value="@_gradeInt" @bind-value:event="oninput" @onchange="ValueChanged" min="@((int)IconGrade.Min)" max="@((int)IconGrade.Max)" step="1" />
             <progress @bind-value="@_gradeInt" @bind-value:event="onchange" max="@((int)IconGrade.Max)" />
@@ -95,16 +95,6 @@
     </div>
 </EditForm>
 
-@*@if (_showMessage)
-{
-    <div class="flex max-w-sm p-2 fixed top-0 left-1/2 -translate-x-1/2 xl:top-auto xl:left-0 xl:bottom-0 xl:-translate-x-0 z-50 opacity-95">
-        <article class="flex-1 flex items-center justify-center gap-4 p-2 pr-4 bg-primary text-white/75 text-center rounded-lg drop-shadow-lg overflow-hidden">
-            <Icon Name="@Icons.ContentCopy" class="p-3 bg-white/25 rounded-full" />
-            <small class="font-bold block truncate">IconManager defaults copied to clipboard</small>
-        </article>
-    </div>
-}*@
-
 @code {
     [Parameter]
     public FilterParams Filters { get; set; } = null!;
@@ -118,8 +108,6 @@
     int _weightInt { get => (int)Filters.Weight; set => Filters.Weight = (IconWeight)value; }
     int _gradeInt { get => (int)Filters.Grade; set => Filters.Grade = (IconGrade)value; }
     int _sizeInt { get => (int)Filters.Size; set => Filters.Size = (IconSize)value; }
-
-    //bool _showMessage;
     string _googleLink { get => $"https://fonts.google.com/icons?selected=Material+Symbols+Outlined:search:FILL@{Filters.Fill.Value()};wght@{Filters.Weight.Value()};GRAD@{Filters.Grade.Value()};opsz@{Filters.Size.Value()}&icon.style={Enum.GetName(typeof(IconType), Filters.Type)}"; }
 
     protected override async Task OnInitializedAsync()
@@ -142,7 +130,6 @@
 
     private Task CopyToClipboard()
     {
-        //_showMessage = true;
         Filters.OnCopyDefaultsToClipboard += ShowCopiedMessage;
         return Filters.CopyDefaultsToClipboard();
     }
@@ -166,7 +153,6 @@
 
     void ResetMessage(object? source, ElapsedEventArgs e)
     {
-        //_showMessage = false;
         StateHasChanged();
     }
 
