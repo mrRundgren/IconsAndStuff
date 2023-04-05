@@ -7,35 +7,29 @@
             <label class="group flex flex-row flex-1 p-1 rounded-full focus-within:bg-black/5 dark:focus-within:bg-white/5 align-items-center overflow-hidden">
                 <input type="text" onblur="this.setAttribute('placeholder', 'Material Symbols for Blazor');" onfocus="this.select(); this.setAttribute('placeholder', 'Search symbols...');" @bind="_filters.Name" @bind:event="onchange" placeholder="Search icons..." class="order-2 peer cursor-pointer focus:cursor-default placeholder-black dark:placeholder-neutral-300 focus:placeholder-neutral-400 text-black dark:text-white focus:text-black dark:focus:text-white p-2 px-1 focus:placeholder-shown:px-4 min-w-0 flex-1 bg-transparent focus:outline-none" />
                 <button tabindex="-1" @onclick="@(() => _filters.Name = "")" class="focus:outline-none order-1 peer-placeholder-shown:hidden select-none rounded-full active:bg-black/10 dark:active:bg-white/10">
-                    <Icon Name="@Icons.ArrowBack" Type="@IconType.Outlined" Fill="@IconFill.None" Weight="@IconWeight.Weight300" Grade="@IconGrade.Low" Size="@IconSize.Normal" class="p-2" />
+                    <Icon Name="@Icons.ArrowBack" class="p-2" />
                 </button>
             </label>
             <button tabindex="-1" @onclick="ToggleDarkMode" class="focus:outline-none rounded-full select-none active:bg-black/10 dark:active:bg-white/10">
-                <Icon Name="@Icons.DarkMode" Type="@IconType.Outlined"Fill="@(_filters.DarkMode ? IconFill.Solid : IconFill.None)" Weight="@IconWeight.Weight300" Grade="@IconGrade.Low" Size="@IconSize.Normal" class="@(_filters.DarkMode ? "text-amber-500 p-3": "p-3")" />
+                <Icon Name="@Icons.DarkMode" Fill="@(_filters.DarkMode ? IconFill.Solid : IconFill.None)" class="@(_filters.DarkMode ? "text-amber-500 p-3": "p-3")" />
             </button>
             <button tabindex="-1" @onclick="ToggleFontDownload" class="focus:outline-none -ml-3 xl:ml-0 rounded-full select-none active:bg-black/10 dark:active:bg-white/10">
-                <Icon Name="@(_filters.FontDownload ? Icons.CodeOff : Icons.Code)" class="p-3" />
+                <Icon Name="@(_filters.DownloadSvg ? Icons.CodeOff : Icons.Code)" class="p-3" />
             </button>
             <button tabindex="-1" @onclick="ToggleDrawer" class="-ml-3 focus:outline-none -mr-1 xl:ml-0 rounded-full select-none active:bg-black/10 dark:active:bg-white/10">
                 <Icon Name="@((_drawer?.Open ?? false) ? Icons.MenuOpen : Icons.Menu)" class=" @((_drawer?.Open ?? false) ? "-scale-x-100 p-3" : "scale-x-100 p-3")" />
             </button>
             <a name="top" class="hidden" />
         </header>
-        <main>@Body</main>
-        
-        <Drawer @ref="@_drawer" OpenChanged="() => Console.WriteLine(_drawer!.Open)">
-            <header class="p-2 flex gap-1 items-center">
-                <h1 class="flex-1 px-5 dark:text-neutral-300 font-bold">Customize</h1>
-                <button tabindex="-1" @onclick="ResetFilters" class="-ml-3 -mr-1 rounded-full select-none active:bg-black/10 dark:active:bg-white/10">
-                    <Icon Name="@Icons.Refresh" class="p-3" />
-                </button>
-            </header>
-            <content class="px-5 py-2 pb-16 flex-1">
-                <Settings @bind-Filters="_filters" />
-            </content>
-        </Drawer>
-
-        @if (_coords.Y > 200)
+        <div class="flex-1 flex">
+            <main class="flex-1">@Body</main>
+            <Drawer @ref="@_drawer" OpenChanged="() => Console.WriteLine(_drawer!.Open)">
+                <content class="px-5 py-2 pb-16 flex-1">
+                    <Settings @bind-Filters="_filters" />
+                </content>
+            </Drawer>
+        </div>
+        @if (_coords.Y > 300)
         {
             <a href="#top" class="flex items-center transition-all pr-6 rounded-full bg-primary text-white fixed -translate-x-1/2 bottom-4 left-1/2 z-50 drop-shadow">
                 <Icon Name="@Icons.KeyboardArrowUp" class="p-3" />
@@ -87,24 +81,12 @@
 
     private void ToggleFontDownload()
     {
-        _filters.FontDownload = !_filters.FontDownload;
+        _filters.DownloadSvg = !_filters.DownloadSvg;
         JSRuntime.InvokeVoidAsync(Interops.LocalStorage_SetItem, new object[] { nameof(_filters), JsonSerializer.Serialize(_filters) });
     }
 
     private void ToggleDrawer()
     {
         _drawer!.Toggle();
-    }
-
-    private void ResetFilters()
-    {
-        var darkMode = _filters.DarkMode;
-        var fontDownload = _filters.FontDownload;
-        _filters = new(JSRuntime)
-        {
-            DarkMode = darkMode,
-            FontDownload = fontDownload
-        };
-        JSRuntime.InvokeVoidAsync(Interops.LocalStorage_SetItem, new object[] { nameof(_filters), JsonSerializer.Serialize(_filters) });
     }
 }

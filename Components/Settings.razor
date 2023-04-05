@@ -17,7 +17,7 @@
                 {
                     <Icon Name="@Icons.CheckBoxOutlineBlank" class="py-3 text-neutral-500" />
                 }
-                <span class="block truncate">Copy/Paste icons without settings</span>
+                <span class="block truncate">Copy using IconManager defaults</span>
             </label>
         </div>
     </div>
@@ -41,35 +41,38 @@
     <div>
         <strong class="block mb-2">Weight: @Filters.Weight.Value()</strong>
         <label class="input-slider">
-            <input type="range" @bind-value="@_weightInt" @bind-value:event="oninput" @onchange="ValueChanged" min="@((int)IconWeight.Weight100)" max="@((int)IconWeight.Weight700)" step="1" />
-            <progress @bind-value="@_weightInt" @bind-value:event="onchange" max="@((int)IconWeight.Weight700)" />
+            <input type="range" @bind-value="@_weightInt" @bind-value:event="oninput" @onchange="ValueChanged" min="@((int)IconWeight.W100)" max="@((int)IconWeight.W700)" step="1" />
+            <progress @bind-value="@_weightInt" @bind-value:event="onchange" max="@((int)IconWeight.W700)" />
         </label>
     </div>
     <div>
         <strong>Grade: @Filters.Grade.Value()</strong>
         <label class="input-slider">
-            <input type="range" @bind-value="@_gradeInt" @bind-value:event="oninput" @onchange="ValueChanged" min="@((int)IconGrade.Low)" max="@((int)IconGrade.High)" step="1" />
-            <progress @bind-value="@_gradeInt" @bind-value:event="onchange" max="@((int)IconGrade.High)" />
+            <input type="range" @bind-value="@_gradeInt" @bind-value:event="oninput" @onchange="ValueChanged" min="@((int)IconGrade.Min)" max="@((int)IconGrade.Max)" step="1" />
+            <progress @bind-value="@_gradeInt" @bind-value:event="onchange" max="@((int)IconGrade.Max)" />
         </label>
     </div>
     <div>
-        <strong>Size: @(Filters.Size.Value())px</strong>
+        <strong class="@(Filters.DownloadSvg && (Filters.Size == IconSize.MD || Filters.Size == IconSize.XXL || Filters.Size == IconSize.XXXL) ? "text-red-700" : "")">Size: @(Filters.Size.Value())px</strong>
         <label class="input-slider">
-            <input type="range" @bind-value="@_sizeInt" @bind-value:event="oninput" @onchange="ValueChanged" min="@((int)IconSize.Small)" max="@((int)IconSize.ExtraLarge)" step="1" />
-            <progress @bind-value="@_sizeInt" @bind-value:event="onchange" max="@((int)IconSize.ExtraLarge)" />
+            <input type="range" @bind-value="@_sizeInt" @bind-value:event="oninput" @onchange="ValueChanged" min="@((int)IconSize.SM)" max="@((int)IconSize.XXXL)" step="1" />
+            <progress @bind-value="@_sizeInt" @bind-value:event="onchange" max="@((int)IconSize.XXXL)" />
         </label>
     </div>
     <hr class="-mx-4 border-black/10 dark:border-white/10" />
     <div class="text-center">
         <small>@Filters.Type, Fill: @Filters.Fill.Value(), Weight: @Filters.Weight.Value(), Grade: @Filters.Grade.Value(), Optical Size: @Filters.Size.Value()</small>
     </div>
+    <div class="my-2">
+        <button tabindex="-1" @onclick="ResetFilters" class="flex w-full cursor-pointer items-center justify-center rounded-full select-none bg-transparent outline outline-primary text-primary hover:text-white hover:bg-primary active:bg-primary-700 active:outline-primary-700">
+            <Icon Name="@Icons.Refresh" class="p-2" />
+            <span class="block pr-3">Reset to defaults</span>
+        </button>
+    </div>
     <hr class="-mx-4 border-black/10 dark:border-white/20" />
-    <h3 class="font-bold">Instructions</h3>
+    <h3 class="font-bold">Usage instructions</h3>
     <p>
         Install the <a href="https://www.nuget.org/packages/BlazorMaterialSymbols" class="text-primary underline" target="_blank">Blazor Material Symbols</a> nuget package.
-    </p>
-    <p>
-
     </p>
     <code class="px-4 py-10 block text-center rounded relative bg-neutral-200 dark:bg-neutral-800">
         <button @onclick="CopyToClipboard" tabindex="-1" class="absolute top-1 right-1 rounded-full select-none active:bg-black/10 dark:active:bg-white/10">
@@ -81,12 +84,13 @@
         Use current settings as defaults for the IconManager component, by copy/pasting the above code into your MainLayout.razor file.
     </small>
     <small class="block">
-        That's it, you can now copy/paste (or download svg) icons.
+        That's it, you can now copy (or download svg) symbols.
     </small>
     <hr class="-mx-4 border-black/10 dark:border-white/20" />
-    <div class="mt-16 mb-2">
-        <a href="@_googleLink" target="google_fonts" class="flex flex-row items-center gap-2 justify-center w-full cursor-pointer select-none rounded-full bg-transparent outline outline-primary text-primary hover:text-white hover:bg-primary active:bg-primary-700 active:outline-primary-700">
-            <span class="block truncate py-3">View in Google Fonts</span>
+    <div class="my-2">
+        <a href="@_googleLink" target="google_fonts" class="flex flex-row items-center justify-center gap-2 justify-center w-full cursor-pointer select-none rounded-full bg-transparent outline outline-primary text-primary hover:text-white hover:bg-primary active:bg-primary-700 active:outline-primary-700">
+            <span class="block truncate py-2 pl-3">View in Google Fonts</span>
+            <Icon Name="@Icons.OpenInNew" class="p-2" />
         </a>
     </div>
 </EditForm>
@@ -164,5 +168,17 @@
     {
         //_showMessage = false;
         StateHasChanged();
+    }
+
+    void ResetFilters()
+    {
+        var darkMode = Filters.DarkMode;
+        var fontDownload = Filters.DownloadSvg;
+        Filters = new(JSRuntime)
+        {
+            DarkMode = darkMode,
+            DownloadSvg = fontDownload
+        };
+        JSRuntime.InvokeVoidAsync(Interops.LocalStorage_SetItem, new object[] { "_filters", JsonSerializer.Serialize(Filters) });
     }
 }

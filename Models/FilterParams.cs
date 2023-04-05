@@ -53,7 +53,7 @@ public sealed class FilterParams : FilterParamsData
             }
             else
             {
-                if(FontDownload)
+                if(DownloadSvg)
                 {
                     return "Click a symbol to download it as SVG";
                 }
@@ -79,7 +79,7 @@ public sealed class FilterParams : FilterParamsData
         Size = data.Size;
         Type  = data.Type;
         Weight = data.Weight;
-        FontDownload = data.FontDownload;
+        DownloadSvg = data.DownloadSvg;
         DarkMode = data.DarkMode;
         UseAsStandard = data.UseAsStandard;
     }

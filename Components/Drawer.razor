@@ -3,9 +3,10 @@
 
 @if(Open)
 {
-    <aside class="@_animation w-full flex flex-col max-w-md bg-white pt-16 drop-shadow-lg z-40 dark:bg-neutral-900 h-screen overflow-y-auto fixed right-0 top-0 @(string.IsNullOrWhiteSpace(Class) ? "" : $" {Class}")" @attributes="@GetAttributes()">
+    <aside class="@_asideAnimation w-full flex flex-col max-w-md bg-white pt-16 drop-shadow-lg z-40 dark:bg-neutral-900 h-screen overflow-y-auto fixed right-0 top-0 2xl:sticky 2xl:-mt-[64px] @(string.IsNullOrWhiteSpace(Class) ? "" : $" {Class}")" @attributes="@GetAttributes()">
         @ChildContent
     </aside>
+    <div @onclick="CloseDrawer" class="@_modalAnimation cursor-pointer bg-black/50 fixed w-full h-screen z-30 2xl:hidden">&nbsp;</div>
 }
 
 @code {
@@ -22,7 +23,8 @@
     public Dictionary<string, object>? Attributes { get; set; }
 
     Timer? _animationTimer = null!;
-    string _animation = String.Empty;
+    string _asideAnimation = String.Empty;
+    string _modalAnimation = String.Empty;
 
     private string? Class { get => Attributes?.SingleOrDefault(_ => _.Key == "class").Value?.ToString(); }
     private Dictionary<string, object>? GetAttributes() => Attributes?.Where(_ => _.Key != "class").ToDictionary(_ => _.Key, _ => _.Value);
@@ -50,14 +52,16 @@
 
     private void OpenDrawer()
     {
-        _animation = "animate-from-right";
+        _asideAnimation = "animate-from-right";
+        _modalAnimation = "animate-fade-in";
         Open = true;
         OpenChanged.InvokeAsync();
     }
 
     private void CloseDrawer()
     {
-        _animation = "animate-to-right";
+        _asideAnimation = "animate-to-right";
+        _modalAnimation = "animate-fade-out";
         StateHasChanged();
 
         if (_animationTimer!.Enabled)
